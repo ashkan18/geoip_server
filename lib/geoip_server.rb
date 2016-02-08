@@ -11,55 +11,6 @@ configure :production do
   end
 end
 
-get '/' do
-<<END
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <style type="text/css">
-      body {
-        font-family: Archer, Museo, Helvetica, Georgia;
-        margin: 0;
-        padding-top: 20%;
-        text-align: center;
-      }
-      code {
-        background-color: #eee;
-        display: block;
-        font-family: Iconsolata, monospace;
-        font-weight: 700;
-        line-height: 2.0em;
-      }
-      form {
-        margin-top: 20px;
-      }
-      input, button {
-        border-radius: 3px;
-        font-size: 1.0em;
-        padding: 5px;
-      }
-    </style>
-    <title>Detect a computer's location by IP address</title>
-  </head>
-  <body>
-    <h4>
-      Lookup a location by IP address. Example:
-    </h4>
-    <code>
-      curl http://#{request.env['HTTP_HOST']}/207.97.227.239
-    </code>
-    <form action="/" method="get" onsubmit="if(this.ip.value) { this.action = '/' + this.ip.value } else { return false }">
-      <input type="text" name="ip" value="#{request.env['HTTP_X_REAL_IP']}">
-      <button type="submit">Lookup!</button>
-    </form>
-    <p>
-      None of this would be possible without <a href="http://www.maxmind.com/app/geolite">MaxMind</a>.
-    </p>
-  </body>
-</html>
-END
-end
 
 get /\/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/ do |ip|
   data = GeoIP.new(data_file).city(ip)
@@ -94,7 +45,7 @@ def encode data
     # The ISO3166-2 three-character country code
     :country_code_long => data.country_code3,
     # The ISO3166 English-language name of the country
-    :country => data.country_name,
+    :country_name => data.country_name,
     # The two-character continent code
     :continent => data.continent_code,
     # The region name
@@ -104,9 +55,9 @@ def encode data
     # The postal code
     :postal_code => data.postal_code,
     # The latitude
-    :lat => data.latitude,
+    :latitude => data.latitude,
     # The longitude
-    :lng => data.longitude,
+    :longitude => data.longitude,
     # The USA DMA code, if available
     :dma_code => data.dma_code,
     # The area code, if available
